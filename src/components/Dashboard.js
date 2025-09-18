@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import RotatingPot from "./RotatingPot"; // <-- IMPORT the new 3D component
+import RotatingVase from './RotatingVase'; // <-- IMPORT the new Vase component
 
 // Image imports
 import artists1 from "../assets/images/artists1.jpg";
@@ -10,7 +12,7 @@ import artists4 from "../assets/images/artists4.jpg";
 
 // A custom hook for the typewriter effect
 const useTypewriter = (text, speed = 50) => {
-  const [displayText, setDisplayText] = useState('');
+  const [displayText, setDisplayText] = useState("");
 
   useEffect(() => {
     let i = 0;
@@ -31,7 +33,6 @@ const useTypewriter = (text, speed = 50) => {
   return displayText;
 };
 
-
 export default function Dashboard() {
   const navigate = useNavigate();
   const [exitingCard, setExitingCard] = useState(null);
@@ -44,29 +45,65 @@ export default function Dashboard() {
     "The best art is born from the strongest emotions.",
     "Combine two unlikely materials in your next piece.",
     "Don't be afraid to make mistakes; they are portals of discovery.",
-    "Challenge: Create something meaningful in under 10 minutes."
+    "Challenge: Create something meaningful in under 10 minutes.",
   ];
 
-  const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+  const dayOfYear = Math.floor(
+    (new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000
+  );
   const dailySuggestion = aiSuggestions[dayOfYear % aiSuggestions.length];
   const typedSuggestion = useTypewriter(dailySuggestion, 70);
 
-
   const tools = [
-    { id: "chatbot", title: "Chat with Assistant", description: "Get help and guidance from your AI artisan assistant", icon: "💬", route: "/chat", rotation: "-rotate-2" },
-    { id: "story-generator", title: "Story Generator", description: "Generate creative stories with audio narration", icon: "📚", route: "/tools/generate-story", rotation: "rotate-1" },
-    { id: "image-captioner", title: "Image Describer", description: "Give your pictures a voice and see what the AI muse sees", icon: "🖼️", route: "/ImageCaptioner", rotation: "rotate-1" }
+    {
+      id: "chatbot",
+      title: "Chat with Assistant",
+      description: "Get help and guidance from your AI artisan assistant",
+      icon: "💬",
+      route: "/chat",
+      rotation: "-rotate-2",
+    },
+    {
+      id: "story-generator",
+      title: "Story Generator",
+      description: "Generate creative stories with audio narration",
+      icon: "📚",
+      route: "/tools/generate-story",
+      rotation: "rotate-1",
+    },
+    {
+      id: "image-captioner",
+      title: "Image Describer",
+      description: "Give your pictures a voice and see what the AI muse sees",
+      icon: "🖼️",
+      route: "/ImageCaptioner",
+      rotation: "rotate-1",
+    },
   ];
 
   const scrapbookItems = [
     // <-- ADJUSTED size and position
-    { id: 'item1', image: artists3, caption: "Sketches", position: 'top-1/4 -left-16', rotation: 'rotate-6' },
-    { id: 'item2', image: artists4, caption: "Inspiration...", position: 'top-1/2 -right-12', rotation: '-rotate-3' }
+    {
+      id: "item1",
+      image: artists3,
+      caption: "Sketches",
+      position: "top-1/4 -left-16",
+      rotation: "rotate-6",
+    },
+    {
+      id: "item2",
+      image: artists4,
+      caption: "Inspiration...",
+      position: "top-1/2 -right-12",
+      rotation: "-rotate-3",
+    },
   ];
 
   const handleNavigate = (toolId, route) => {
     setExitingCard(toolId);
-    setTimeout(() => { navigate(route); }, 600);
+    setTimeout(() => {
+      navigate(route);
+    }, 600);
   };
 
   const handleLogout = () => {
@@ -74,39 +111,91 @@ export default function Dashboard() {
     localStorage.removeItem("email");
     navigate("/");
   };
-  
-  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.2 } } };
-  const itemVariants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { duration: 0.5 } } };
-  const cardVariants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { duration: 0.5 } }, hover: { scale: 1.05, rotate: 0, y: -10, transition: { type: "spring", stiffness: 300, damping: 15 } }, exit: { rotateY: 90, opacity: 0, scale: 0.9, transition: { duration: 0.6, ease: "easeInOut" } } };
-  const scrapbookItemVariants = { hidden: { opacity: 0, scale: 0.5 }, visible: { opacity: 1, scale: 1, transition: { delay: 0.5, type: "spring", stiffness: 260, damping: 20 } }, hover: { scale: 1.1, zIndex: 10, transition: { type: 'spring', stiffness: 300 } } };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
+  };
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
+  };
+  const cardVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
+    hover: {
+      scale: 1.05,
+      rotate: 0,
+      y: -10,
+      transition: { type: "spring", stiffness: 300, damping: 15 },
+    },
+    exit: {
+      rotateY: 90,
+      opacity: 0,
+      scale: 0.9,
+      transition: { duration: 0.6, ease: "easeInOut" },
+    },
+  };
+  const scrapbookItemVariants = {
+    hidden: { opacity: 0, scale: 0.5 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: { delay: 0.5, type: "spring", stiffness: 260, damping: 20 },
+    },
+    hover: {
+      scale: 1.1,
+      zIndex: 10,
+      transition: { type: "spring", stiffness: 300 },
+    },
+  };
 
   return (
     <div className="min-h-screen bg-[#F4EFE9] font-mono text-gray-800 overflow-hidden">
+      {/* --- NEW: Render the 3D Pot on the left side --- */}
+      <div className="absolute top-1/2 -translate-y-1/2 left-4 w-96 h-96 z-0 hidden lg:block">
+        <RotatingPot />
+      </div>
+
+      <div className="absolute top-1/4 -right-16 w-96 h-96 z-0 hidden lg:block">
+      <RotatingVase />
+    </div>
+
       <div className="relative z-10 py-12 px-4">
         {/* <-- ADJUSTED max-width for a more compact layout --> */}
-        <motion.div className="max-w-3xl mx-auto relative" variants={containerVariants} initial="hidden" animate="visible">
-          
+        <motion.div
+          className="max-w-3xl mx-auto relative"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {/* AI Daily Suggestion Note */}
-          <motion.div
-            // <-- ADJUSTED size and position
+          {/* <motion.div
+          
             className="absolute bottom-4 -left-8 w-56 p-4 bg-slate-50 shadow-lg border-t-4 border-slate-300 hidden lg:block"
             initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0, transition: { delay: 1.2, duration: 0.8 } }}
-            style={{ rotate: '-4deg' }}
+            animate={{
+              opacity: 1,
+              x: 0,
+              transition: { delay: 1.2, duration: 0.8 },
+            }}
+            style={{ rotate: "-4deg" }}
           >
-            <p className="text-sm font-semibold text-slate-500 mb-2">A Note from Your AI Muse:</p>
-            <p className="text-slate-700 h-24 text-sm"> {/* <-- ADJUSTED font size */}
+            <p className="text-sm font-semibold text-slate-500 mb-2">
+              A Note from Your AI Muse:
+            </p>
+            <p className="text-slate-700 h-24 text-sm">
+              {" "}
+            
               {typedSuggestion}
               <span className="animate-ping">_</span>
             </p>
-          </motion.div>
+          </motion.div> */}
 
           {/* Decorative Images */}
           <motion.img 
             src={artists1} 
             alt="An artist's hands" 
-            // <-- ADJUSTED size and position
             className="absolute top-0 right-0 w-32 h-auto border-4 border-white shadow-xl hidden lg:block" 
             style={{ top: '-2rem', right: '-3rem' }} 
             initial={{ opacity: 0, scale: 0.8, rotate: 15 }} 
@@ -115,7 +204,6 @@ export default function Dashboard() {
           <motion.img 
             src={artists2} 
             alt="Hand-drawn arrow" 
-            // <-- ADJUSTED size and position
             className="absolute -top-10 left-1/4 w-20 h-auto opacity-60 pointer-events-none hidden md:block" 
             initial={{ y: -50, opacity: 0 }} 
             animate={{ y: 0, opacity: 0.6, transition: { delay: 1, duration: 0.5 } }} 
@@ -126,14 +214,12 @@ export default function Dashboard() {
               key={item.id} 
               variants={scrapbookItemVariants} 
               whileHover="hover" 
-              // <-- ADJUSTED size
               className={`absolute w-40 p-2 bg-white shadow-lg border-2 border-gray-100 hidden lg:block ${item.position} ${item.rotation}`}
             > 
-              {/* <-- ADJUSTED size */}
               <div className="w-full h-28 bg-gray-200 mb-2"> 
                 <img src={item.image} alt={item.caption} className="w-full h-full object-cover" /> 
               </div> 
-              <p className="text-center font-handwriting text-base text-gray-700"> {/* <-- ADJUSTED font size */}
+              <p className="text-center font-handwriting text-base text-gray-700"> 
                 {item.caption} 
               </p> 
             </motion.div> 
@@ -147,7 +233,6 @@ export default function Dashboard() {
 
           {/* Tools Grid */}
           <div 
-            // <-- ADJUSTED gap for a tighter grid
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-20" 
             style={{ perspective: '1200px' }}
           >
@@ -157,7 +242,7 @@ export default function Dashboard() {
                 <div className="bg-white p-6 shadow-lg rounded-sm border border-gray-200">
                   <div className="text-3xl mb-4">{tool.icon}</div>
                   <h3 className="font-handwriting text-3xl font-bold text-gray-800 mb-2">{tool.title}</h3>
-                  <p className="text-gray-600 leading-relaxed mb-4 text-sm">{tool.description}</p> {/* <-- ADJUSTED font size */}
+                  <p className="text-gray-600 leading-relaxed mb-4 text-sm">{tool.description}</p>
                   <span className="font-bold text-gray-700 group-hover:text-black">Start Creating →</span>
                 </div>
               </motion.div>
@@ -176,3 +261,9 @@ export default function Dashboard() {
     </div>
   );
 }
+
+
+
+
+
+
