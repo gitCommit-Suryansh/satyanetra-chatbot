@@ -5,6 +5,7 @@ import Dashboard from "./components/Dashboard";
 import Chat from "./components/Chat";
 import StoryGenerator from "./components/StoryGenerator";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ImageCaptioner from "./components/ImageCaptioner";
 import "./App.css";
 
 function App() {
@@ -41,6 +42,14 @@ function App() {
           element={
             <ProtectedRoute>
               <StoryGenerator />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/ImageCaptioner" 
+          element={
+            <ProtectedRoute>
+              <ImageCaptioner />
             </ProtectedRoute>
           } 
         />

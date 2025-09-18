@@ -1,156 +1,177 @@
-import React from "react";
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
+import { motion } from "framer-motion";
+
+// Image imports
+import artists1 from "../assets/images/artists1.jpg";
+import artists2 from "../assets/images/artists2.jpg";
+import artists3 from "../assets/images/artists3.png";
+import artists4 from "../assets/images/artists4.jpg";
+
+// A custom hook for the typewriter effect
+const useTypewriter = (text, speed = 50) => {
+  const [displayText, setDisplayText] = useState('');
+
+  useEffect(() => {
+    let i = 0;
+    const typingInterval = setInterval(() => {
+      if (i < text.length) {
+        setDisplayText(text.substring(0, i + 1));
+        i++;
+      } else {
+        clearInterval(typingInterval);
+      }
+    }, speed);
+
+    return () => {
+      clearInterval(typingInterval);
+    };
+  }, [text, speed]);
+
+  return displayText;
+};
 
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [exitingCard, setExitingCard] = useState(null);
 
-  const tools = [
-    {
-      id: "chatbot",
-      title: "Chat with Assistant",
-      description: "Get help and guidance from your AI artisan assistant",
-      icon: "💬",
-      route: "/chat",
-      color: "from-green-500 to-emerald-500",
-      bgGlow: "bg-green-500/20"
-    },
-    {
-      id: "story-generator",
-      title: "Story Generator",
-      description: "Generate creative stories with audio narration",
-      icon: "📚",
-      route: "/tools/generate-story",
-      color: "from-purple-500 to-pink-500",
-      bgGlow: "bg-purple-500/20"
-    }
+  const aiSuggestions = [
+    "Try creating something using only primary colors today.",
+    "Write a short story that starts with the last sentence you spoke.",
+    "Find an everyday object and draw it from memory.",
+    "Listen to a new genre of music and paint what you feel.",
+    "The best art is born from the strongest emotions.",
+    "Combine two unlikely materials in your next piece.",
+    "Don't be afraid to make mistakes; they are portals of discovery.",
+    "Challenge: Create something meaningful in under 10 minutes."
   ];
 
-  const handleNavigate = (route) => {
-    console.log(`Navigate to: ${route}`);
-    navigate(route);
+  const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+  const dailySuggestion = aiSuggestions[dayOfYear % aiSuggestions.length];
+  const typedSuggestion = useTypewriter(dailySuggestion, 70);
+
+
+  const tools = [
+    { id: "chatbot", title: "Chat with Assistant", description: "Get help and guidance from your AI artisan assistant", icon: "💬", route: "/chat", rotation: "-rotate-2" },
+    { id: "story-generator", title: "Story Generator", description: "Generate creative stories with audio narration", icon: "📚", route: "/tools/generate-story", rotation: "rotate-1" },
+    { id: "image-captioner", title: "Image Describer", description: "Give your pictures a voice and see what the AI muse sees", icon: "🖼️", route: "/ImageCaptioner", rotation: "rotate-1" }
+  ];
+
+  const scrapbookItems = [
+    // <-- ADJUSTED size and position
+    { id: 'item1', image: artists3, caption: "Sketches", position: 'top-1/4 -left-16', rotation: 'rotate-6' },
+    { id: 'item2', image: artists4, caption: "Inspiration...", position: 'top-1/2 -right-12', rotation: '-rotate-3' }
+  ];
+
+  const handleNavigate = (toolId, route) => {
+    setExitingCard(toolId);
+    setTimeout(() => { navigate(route); }, 600);
   };
 
   const handleLogout = () => {
-    console.log("Logout clicked");
     localStorage.removeItem("user_id");
     localStorage.removeItem("email");
     navigate("/");
   };
+  
+  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.2 } } };
+  const itemVariants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { duration: 0.5 } } };
+  const cardVariants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { duration: 0.5 } }, hover: { scale: 1.05, rotate: 0, y: -10, transition: { type: "spring", stiffness: 300, damping: 15 } }, exit: { rotateY: 90, opacity: 0, scale: 0.9, transition: { duration: 0.6, ease: "easeInOut" } } };
+  const scrapbookItemVariants = { hidden: { opacity: 0, scale: 0.5 }, visible: { opacity: 1, scale: 1, transition: { delay: 0.5, type: "spring", stiffness: 260, damping: 20 } }, hover: { scale: 1.1, zIndex: 10, transition: { type: 'spring', stiffness: 300 } } };
+
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-pink-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-3/4 left-1/3 w-72 h-72 bg-emerald-500/15 rounded-full blur-3xl animate-pulse"></div>
-      </div>
+    <div className="min-h-screen bg-[#F4EFE9] font-mono text-gray-800 overflow-hidden">
+      <div className="relative z-10 py-12 px-4">
+        {/* <-- ADJUSTED max-width for a more compact layout --> */}
+        <motion.div className="max-w-3xl mx-auto relative" variants={containerVariants} initial="hidden" animate="visible">
+          
+          {/* AI Daily Suggestion Note */}
+          <motion.div
+            // <-- ADJUSTED size and position
+            className="absolute bottom-4 -left-8 w-56 p-4 bg-slate-50 shadow-lg border-t-4 border-slate-300 hidden lg:block"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0, transition: { delay: 1.2, duration: 0.8 } }}
+            style={{ rotate: '-4deg' }}
+          >
+            <p className="text-sm font-semibold text-slate-500 mb-2">A Note from Your AI Muse:</p>
+            <p className="text-slate-700 h-24 text-sm"> {/* <-- ADJUSTED font size */}
+              {typedSuggestion}
+              <span className="animate-ping">_</span>
+            </p>
+          </motion.div>
 
-      <div className="relative z-10 py-8 px-4">
-        <div className="max-w-6xl mx-auto">
+          {/* Decorative Images */}
+          <motion.img 
+            src={artists1} 
+            alt="An artist's hands" 
+            // <-- ADJUSTED size and position
+            className="absolute top-0 right-0 w-32 h-auto border-4 border-white shadow-xl hidden lg:block" 
+            style={{ top: '-2rem', right: '-3rem' }} 
+            initial={{ opacity: 0, scale: 0.8, rotate: 15 }} 
+            animate={{ opacity: 1, scale: 1, rotate: 8, transition: { delay: 0.8, duration: 0.7 } }} 
+          />
+          <motion.img 
+            src={artists2} 
+            alt="Hand-drawn arrow" 
+            // <-- ADJUSTED size and position
+            className="absolute -top-10 left-1/4 w-20 h-auto opacity-60 pointer-events-none hidden md:block" 
+            initial={{ y: -50, opacity: 0 }} 
+            animate={{ y: 0, opacity: 0.6, transition: { delay: 1, duration: 0.5 } }} 
+          />
+          
+          {scrapbookItems.map(item => ( 
+            <motion.div 
+              key={item.id} 
+              variants={scrapbookItemVariants} 
+              whileHover="hover" 
+              // <-- ADJUSTED size
+              className={`absolute w-40 p-2 bg-white shadow-lg border-2 border-gray-100 hidden lg:block ${item.position} ${item.rotation}`}
+            > 
+              {/* <-- ADJUSTED size */}
+              <div className="w-full h-28 bg-gray-200 mb-2"> 
+                <img src={item.image} alt={item.caption} className="w-full h-full object-cover" /> 
+              </div> 
+              <p className="text-center font-handwriting text-base text-gray-700"> {/* <-- ADJUSTED font size */}
+                {item.caption} 
+              </p> 
+            </motion.div> 
+          ))}
+          
           {/* Header */}
-          <div className="text-center mb-12">
-            <div className="mb-6">
-              <div className="w-16 h-16 bg-white/10 backdrop-blur-lg rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20 shadow-xl">
-                <span className="text-2xl">🎨</span>
-              </div>
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent mb-3">
-                Artisan Dashboard
-              </h1>
-              <p className="text-lg text-purple-200 font-light max-w-2xl mx-auto">Choose your creative tool and unleash your imagination</p>
-            </div>
-          </div>
+          <motion.div className="text-center mb-16" variants={itemVariants}>
+            <h1 className="font-handwriting text-5xl md:text-6xl font-bold text-gray-900 mb-3">My Creative Journal</h1>
+            <p className="text-gray-600">A space for ideas and inspiration.</p>
+          </motion.div>
 
           {/* Tools Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12 max-w-4xl mx-auto">
-            {tools.map((tool, index) => (
-              <div
-                key={tool.id}
-                onClick={() => handleNavigate(tool.route)}
-                className="group relative bg-white/10 backdrop-blur-lg rounded-2xl shadow-xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:-translate-y-2 hover:scale-[1.02] cursor-pointer overflow-hidden border border-white/20 hover:border-white/40"
-              >
-                {/* Glow effect on hover */}
-                <div className={`absolute inset-0 ${tool.bgGlow} opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500`}></div>
-                
-                {/* Top gradient bar */}
-                <div className={`h-1 bg-gradient-to-r ${tool.color}`}></div>
-                
-                <div className="relative p-6">
-                  {/* Icon container */}
-                  <div className={`w-14 h-14 bg-gradient-to-r ${tool.color} rounded-xl flex items-center justify-center mb-4 shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>
-                    <span className="text-2xl">{tool.icon}</span>
-                  </div>
-                  
-                  {/* Content */}
-                  <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-purple-200 group-hover:bg-clip-text transition-all duration-300">
-                    {tool.title}
-                  </h3>
-                  <p className="text-purple-200 leading-relaxed mb-6 group-hover:text-white/90 transition-colors duration-300">
-                    {tool.description}
-                  </p>
-                  
-                  {/* Call to action */}
-                  <div className="flex items-center justify-between">
-                    <div className={`flex items-center text-white font-semibold group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:${tool.color} group-hover:bg-clip-text transition-all duration-300`}>
-                      <span>Get Started</span>
-                      <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                    
-                    {/* Tool number indicator */}
-                    <div className="w-7 h-7 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white/70 text-sm font-bold">
-                      {index + 1}
-                    </div>
-                  </div>
+          <div 
+            // <-- ADJUSTED gap for a tighter grid
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-20" 
+            style={{ perspective: '1200px' }}
+          >
+            {tools.map((tool) => (
+              <motion.div key={tool.id} variants={cardVariants} animate={exitingCard === tool.id ? 'exit' : 'visible'} whileHover="hover" className={`cursor-pointer transform ${tool.rotation}`} onClick={() => handleNavigate(tool.id, tool.route)} style={{ transformStyle: 'preserve-3d' }}>
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-yellow-300/50 backdrop-blur-sm border-l border-r border-yellow-400/60 transform rotate-1"></div>
+                <div className="bg-white p-6 shadow-lg rounded-sm border border-gray-200">
+                  <div className="text-3xl mb-4">{tool.icon}</div>
+                  <h3 className="font-handwriting text-3xl font-bold text-gray-800 mb-2">{tool.title}</h3>
+                  <p className="text-gray-600 leading-relaxed mb-4 text-sm">{tool.description}</p> {/* <-- ADJUSTED font size */}
+                  <span className="font-bold text-gray-700 group-hover:text-black">Start Creating →</span>
                 </div>
-                
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
-              </div>
+              </motion.div>
             ))}
           </div>
 
           {/* User Actions */}
-          <div className="text-center">
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 inline-block">
-              <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-6">
-                {/* User Info */}
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                  <div className="text-left">
-                    <div className="text-white font-semibold">Welcome back!</div>
-                    <div className="text-purple-200 text-sm">Ready to create?</div>
-                  </div>
-                </div>
-
-                {/* Logout Button */}
-                <button
-                  onClick={handleLogout}
-                  className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white px-6 py-2.5 rounded-xl font-semibold transition-all duration-300 flex items-center space-x-2 shadow-lg hover:shadow-red-500/25 transform hover:scale-105 text-sm"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                  <span>Logout</span>
-                </button>
-              </div>
+          <motion.div className="text-center" variants={itemVariants}>
+            <div className="inline-block relative">
+              <button onClick={handleLogout} className="bg-red-500 text-white px-6 py-2 rounded-sm font-bold shadow-md hover:bg-red-600 transition-colors duration-300 transform hover:-translate-y-0.5">Pack Up</button>
+              <p className="font-handwriting text-sm text-gray-500 mt-3">(Logged in as Artisan)</p>
             </div>
-          </div>
-
-          {/* Footer */}
-          <div className="text-center mt-8">
-            <p className="text-purple-300/70 text-sm">
-              Powered by AI ✨ Built with creativity 🎨
-            </p>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );

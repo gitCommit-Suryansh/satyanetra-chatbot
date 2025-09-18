@@ -8,7 +8,7 @@ export default function Login({ onLoginSuccess }) {
   });
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-
+  const apiUrl = process.env.REACT_APP_API_URL;
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -17,7 +17,7 @@ export default function Login({ onLoginSuccess }) {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://genaibackend-r809.onrender.com/login",
+        apiUrl + "/login",
         null,
         {
           params: {

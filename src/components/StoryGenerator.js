@@ -1,6 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { motion } from "framer-motion"; // Import framer-motion
+import artists1 from "../assets/images/artists1.jpg";
+import artists4 from "../assets/images/artists2.jpg";
 
 export default function StoryGenerator() {
   const navigate = useNavigate();
@@ -13,7 +16,7 @@ export default function StoryGenerator() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-
+  const apiUrl = process.env.REACT_APP_API_URL;
   useEffect(() => {
     if (audioBase64 && audioRef.current) {
       const audio = audioRef.current;
@@ -61,7 +64,7 @@ export default function StoryGenerator() {
       formData.append("message", message.trim());
   
       const res = await axios.post(
-        "https://genaibackend-r809.onrender.com/tools/generate-story",
+        apiUrl + "/voice/generate-story",
         formData,
         {
           headers: {
@@ -70,8 +73,8 @@ export default function StoryGenerator() {
         }
       );
   
-      setStory(res.data.story);
-      setAudioBase64(res.data.audio_base64);
+      setStory(res.data.story_text);
+      setAudioBase64(res.data.story_audio);
     } catch (err) {
       console.error(err);
       const errorMessage =
@@ -123,222 +126,135 @@ export default function StoryGenerator() {
   };
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.2 } } };
+  const itemVariants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1, transition: { duration: 0.5 } } };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-pink-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse delay-500"></div>
-      </div>
+    // THEME: Main container with paper background and themed fonts
+    <div className="min-h-screen bg-[#F4EFE9] font-mono text-gray-800 overflow-hidden">
+      
+      {/* THEME: Decorative images for consistency */}
+      <motion.img src={artists1} alt="Decorative artist hands" className="absolute top-0 right-0 w-48 h-auto border-4 border-white shadow-lg hidden lg:block z-0" style={{ top: '2rem', right: '2rem', rotate: '8deg' }} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1, transition: { delay: 0.5, duration: 0.7 } }} />
+      <motion.img src={artists4} alt="Decorative inspiration" className="absolute bottom-0 left-0 w-40 h-auto border-4 border-white shadow-lg hidden lg:block z-0" style={{ bottom: '2rem', left: '2rem', rotate: '-5deg' }} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1, transition: { delay: 0.7, duration: 0.7 } }} />
 
       <div className="relative z-10 p-6">
-        <div className="max-w-5xl mx-auto">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-10">
-            <div className="text-center md:text-left">
-              <h1 className="text-5xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent mb-3">
-                ✨ Story Weaver
+        <motion.div 
+          className="max-w-3xl mx-auto"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {/* THEME: Themed Header */}
+          <motion.div variants={itemVariants} className="flex items-center justify-between mb-10 border-b-2 border-gray-200 pb-4">
+            <div className="text-left">
+              <h1 className="font-handwriting text-5xl font-bold text-gray-900 mb-1">
+                Story Weaver
               </h1>
-              <p className="text-purple-200 text-lg font-light">
-                Where imagination meets AI magic
+              <p className="text-gray-600">
+                Let's write a new page together.
               </p>
             </div>
             <button
               onClick={() => navigate("/dashboard")}
-              className="bg-white/10 backdrop-blur-lg hover:bg-white/20 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-2 border border-white/20 hover:border-white/30 group"
+              className="font-semibold text-gray-600 hover:text-black transition-colors duration-300 group flex items-center space-x-2"
             >
-              <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              <span>Dashboard</span>
+              <span className="transform group-hover:-translate-x-1 transition-transform duration-300">←</span>
+              <span>Back to Journal</span>
             </button>
-          </div>
+          </motion.div>
 
-          {/* Message Input Card */}
-          <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl p-8 mb-8 border border-white/20">
-            <div className="flex items-center mb-6">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mr-4">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
-              </div>
-              <h3 className="text-2xl font-bold text-white">Craft Your Story</h3>
+          {/* THEME: Input card styled like a pasted note */}
+          <motion.div variants={itemVariants} className="relative bg-white p-8 shadow-lg rounded-sm border border-gray-200 mb-8" style={{ transform: 'rotate(-1deg)' }}>
+            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-yellow-300/50 backdrop-blur-sm border-l border-r border-yellow-400/60 transform rotate-1"></div>
+            <h3 className="font-handwriting text-3xl font-bold text-gray-800 mb-4">Craft Your Prompt</h3>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="A brave knight in a forest of whispers..."
+              className="w-full p-4 bg-stone-50 border-2 border-dashed border-stone-200 rounded-sm focus:outline-none focus:border-stone-400 text-gray-700 placeholder-gray-400 resize-none text-base transition-all duration-300"
+              rows={4}
+              disabled={isLoading}
+            />
+            <div className="flex justify-center mt-6">
+              <button
+                onClick={generateStory}
+                disabled={isLoading || !message.trim()}
+                className="bg-gray-800 hover:bg-black disabled:bg-gray-400 text-white px-10 py-3 rounded-sm font-bold text-lg transition-all duration-300 flex items-center space-x-3 shadow-md transform hover:-translate-y-0.5 disabled:transform-none"
+              >
+                {isLoading ? (
+                  <>
+                    <span className="animate-pulse">Weaving...</span>
+                  </>
+                ) : (
+                  <span>Generate Story</span>
+                )}
+              </button>
             </div>
-            
-            <div className="space-y-6">
-              <div className="relative">
-                <textarea
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Describe your dream story... ✨ (e.g., 'A magical adventure about a young wizard discovering their powers', 'A heartwarming tale about friendship between mystical creatures')"
-                  className="w-full px-6 py-4 bg-white/10 backdrop-blur-sm border border-white/30 rounded-2xl focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-transparent text-white placeholder-purple-200 resize-none text-lg transition-all duration-300"
-                  rows={4}
-                  disabled={isLoading}
-                />
-                <div className="absolute bottom-4 right-4 text-purple-300 text-sm">
-                  {message.length}/1000
-                </div>
-              </div>
-              
-              <div className="flex justify-center">
-                <button
-                  onClick={generateStory}
-                  disabled={isLoading || !message.trim()}
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 disabled:from-gray-400 disabled:to-gray-500 text-white px-12 py-4 rounded-2xl font-bold text-lg transition-all duration-300 flex items-center space-x-3 shadow-2xl hover:shadow-purple-500/25 transform hover:scale-105 disabled:transform-none disabled:hover:scale-100"
-                >
-                  {isLoading ? (
-                    <>
-                      <div className="w-6 h-6 border-3 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>Weaving Magic...</span>
-                    </>
-                  ) : (
-                    <>
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 7.172V5L8 4z" />
-                      </svg>
-                      <span>Generate Story</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
+          </motion.div>
 
-          {/* Error Message */}
+          {/* THEME: Themed Error Message */}
           {error && (
-            <div className="mb-8 p-6 bg-red-500/20 backdrop-blur-lg border border-red-400/50 text-red-200 rounded-2xl">
-              <div className="flex items-center">
-                <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {error}
-              </div>
-            </div>
+            <motion.div variants={itemVariants} className="mb-8 p-4 bg-red-100 border border-red-300 text-red-800 rounded-sm">
+              {error}
+            </motion.div>
           )}
 
-          {/* Story Content */}
+          {/* THEME: Story result card */}
           {story && (
-            <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl p-8 mb-8 border border-white/20">
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center">
-                  <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mr-4">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                    </svg>
-                  </div>
-                  <h2 className="text-3xl font-bold text-white">Your Magical Story</h2>
-                </div>
-              </div>
+            <motion.div variants={itemVariants} className="bg-white p-8 shadow-lg rounded-sm border border-gray-200 mb-8" style={{ transform: 'rotate(1deg)' }}>
+              <h2 className="font-handwriting text-3xl font-bold text-gray-800 mb-4">Your Unfolded Tale</h2>
               
-              {/* Audio Player */}
+              {/* THEME: Themed Audio Player */}
               {audioBase64 && (
-                <div className="mb-8 p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20">
-                  <audio
-                    ref={audioRef}
-                    src={`data:audio/mp3;base64,${audioBase64}`}
-                    preload="metadata"
-                  />
-                  
-                  <div className="flex items-center space-x-4 mb-4">
-                    <button
-                      onClick={toggleAudio}
-                      className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg hover:shadow-green-500/25"
-                    >
-                      {isPlaying ? (
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 9v6m4-6v6" />
-                        </svg>
-                      ) : (
-                        <svg className="w-6 h-6 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1m4 0h1m-6 4h1m4 0h1m6-6V7a3 3 0 00-3-3H6a3 3 0 00-3 3v1" />
-                        </svg>
-                      )}
+                <div className="mb-6 p-4 bg-stone-50 rounded-sm border-2 border-dashed border-stone-200">
+                  <audio ref={audioRef} src={`data:audio/mp3;base64,${audioBase64}`} preload="metadata" />
+                  <div className="flex items-center space-x-4">
+                    <button onClick={toggleAudio} className="bg-gray-800 hover:bg-black text-white w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300">
+                      {isPlaying ? '❚❚' : '►'}
                     </button>
-                    
-                    <button
-                      onClick={stopAudio}
-                      className="bg-white/20 hover:bg-white/30 text-white w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 10h6v4H9z" />
-                      </svg>
-                    </button>
-                    
                     <div className="flex-1 flex items-center space-x-3">
-                      <span className="text-purple-200 text-sm font-mono min-w-[40px]">
-                        {formatTime(currentTime)}
-                      </span>
+                      <span className="text-gray-500 text-sm min-w-[40px]">{formatTime(currentTime)}</span>
                       <div className="flex-1 relative">
                         <input
                           type="range"
-                          min="0"
-                          max="100"
-                          value={progress}
+                          min="0" max="100" value={progress}
                           onChange={handleSeek}
-                          className="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer slider"
-                          style={{
-                            background: `linear-gradient(to right, #10b981 ${progress}%, rgba(255,255,255,0.2) ${progress}%)`
-                          }}
+                          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                          style={{ background: `linear-gradient(to right, #333 ${progress}%, #ddd ${progress}%)` }}
                         />
                       </div>
-                      <span className="text-purple-200 text-sm font-mono min-w-[40px]">
-                        {formatTime(duration)}
-                      </span>
+                      <span className="text-gray-500 text-sm min-w-[40px]">{formatTime(duration)}</span>
                     </div>
                   </div>
                 </div>
               )}
               
-              <div className="prose max-w-none">
-                <div className="text-white leading-relaxed text-lg whitespace-pre-wrap font-light tracking-wide">
-                  {story}
-                </div>
+              <div className="text-gray-700 leading-relaxed text-base whitespace-pre-wrap tracking-wide">
+                {story}
               </div>
-            </div>
+            </motion.div>
           )}
-
-          {/* Loading State */}
-          {isLoading && (
-            <div className="bg-white/10 backdrop-blur-lg rounded-3xl shadow-2xl p-12 text-center border border-white/20">
-              <div className="flex flex-col items-center justify-center space-y-6">
-                <div className="relative">
-                  <div className="w-16 h-16 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
-                  <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-r-pink-500 rounded-full animate-spin animate-reverse"></div>
-                </div>
-                <div className="text-center">
-                  <h3 className="text-2xl font-bold text-white mb-2">Creating Your Story</h3>
-                  <p className="text-purple-200">Weaving words with AI magic...</p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        </motion.div>
       </div>
       
+      {/* THEME: Custom styles for the audio slider to match the new theme */}
       <style jsx>{`
         .slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
           appearance: none;
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          background: #10b981;
+          background: #333; /* Themed thumb color */
           cursor: pointer;
-          box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
         }
         .slider::-moz-range-thumb {
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          background: #10b981;
+          background: #333; /* Themed thumb color */
           cursor: pointer;
           border: none;
-          box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
-        }
-        .animate-reverse {
-          animation-direction: reverse;
         }
       `}</style>
     </div>
