@@ -7,6 +7,8 @@ import StoryGenerator from "./components/StoryGenerator";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ImageCaptioner from "./components/ImageCaptioner";
 import "./App.css";
+import AddProduct from "./components/AddProduct";
+import ProductChatbot from "./components/ProductChatbot";
 
 function App() {
   return (
@@ -36,6 +38,22 @@ function App() {
             </ProtectedRoute>
           } 
         />
+        <Route 
+          path="/AddProduct" 
+          element={
+            <ProtectedRoute>
+              <AddProduct />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/ProductChatbot" 
+          element={
+            <ProtectedRoute>
+              <ProductChatbot />
+            </ProtectedRoute>
+          } 
+        />
         
         <Route 
           path="/tools/generate-story" 
@@ -56,7 +74,12 @@ function App() {
         
         {/* Catch all route */}
         <Route path="*" element={<Navigate to="/" replace />} />
+
+         
+
       </Routes>
+
+      
     </Router>
   );
 }

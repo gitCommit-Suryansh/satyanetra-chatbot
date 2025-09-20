@@ -1,9 +1,32 @@
 import React, { useState, useRef, useEffect } from "react";
-import axios from 'axios'
-import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from "framer-motion"; // Import framer-motion
-import artists3 from "../assets/images/artists3.png";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from "framer-motion";
+import mandalaimg from '../assets/images/mandalaart.png'; // Import the background image
+import Navbar from "./Navbar";
 
+// --- NEW: A simple SVG for the lock icon in the nav ---
+const LockIcon = () => (
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+        <path fillRule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a2 2 0 10-4 0v1h4z" clipRule="evenodd" />
+    </svg>
+);
+
+// --- NEW: SVG for the GuruAI avatar ---
+const GuruAvatar = () => (
+    <div className="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center border-2 border-amber-200 shadow-md">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {/* This is a simplified representation of the GuruAI avatar */}
+            <circle cx="24" cy="24" r="22" fill="#FFDDBB"/>
+            <path d="M16 34C16 30 20 28 24 28C28 28 32 30 32 34" stroke="#A0522D" strokeWidth="2" strokeLinecap="round"/>
+            <circle cx="20" cy="24" r="2" fill="#A0522D"/>
+            <circle cx="28" cy="24" r="2" fill="#A0522D"/>
+            <path d="M22 20C22.6667 19.3333 24 19 26 20" stroke="#A0522D" strokeWidth="2" strokeLinecap="round"/>
+            <path d="M24 10C26 8 29 8 31 10L33 14C33.5 15.5 32 17 30 17H18C16 17 14.5 15.5 15 14L17 10C19 8 22 8 24 10Z" fill="#2962FF"/>
+            <circle cx="24" cy="12" r="2" fill="#40E0D0"/>
+        </svg>
+    </div>
+);
 
 export default function Chat() {
   const [messages, setMessages] = useState([]);
@@ -11,172 +34,185 @@ export default function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const apiUrl = process.env.REACT_APP_API_URL;
   const navigate = useNavigate();
-  const messagesEndRef = useRef(null); // Ref to scroll to the bottom
+  const messagesEndRef = useRef(null);
 
-  const sendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+  // --- NEW: Data for the popular questions ---
+  const popularQuestions = [
+    "Funding opportunities?",
+    "Marketing tips?",
+    "Marketing?",
+    "Pricing strategies",
+    "Legal advice?"
+  ];
+  
+  // --- NEW: Function to handle clicking a popular question ---
+  const handlePopularQuestionClick = (question) => {
+    setInput(question);
+    sendMessage(question); // Immediately send the message
+  };
 
-    const userMessage = input.trim();
-    
-    // Demo user_id check - replace with your localStorage check
+  // --- UPDATED: `sendMessage` can now optionally take a message directly ---
+  const sendMessage = async (messageToSend) => {
+    const userMessage = (typeof messageToSend === 'string' ? messageToSend : input).trim();
+    if (!userMessage || isLoading) return;
+
     const user_id = localStorage.getItem("user_id");
-
     if (!user_id) {
-      alert("Please login first");
-      return;
+        alert("Please login first");
+        return;
     }
 
-    // Add user message to chat
     setMessages((prev) => [...prev, { sender: "user", text: userMessage }]);
-    setInput("");
+    if (typeof messageToSend !== 'string') {
+        setInput("");
+    }
     setIsLoading(true);
 
-    
-
-    
     try {
-      const res = await axios.post(
-        apiUrl + `/chats/${user_id}`,
-        null,
-        {
-          params: {
-            message: userMessage,
-          },
-        }
-      );
-      setMessages((prev) => [...prev, { sender: "bot", text: res.data.reply }]);
+        const res = await axios.post(
+            apiUrl + `/chats/${user_id}`,
+            null,
+            { params: { message: userMessage } }
+        );
+        setMessages((prev) => [...prev, { sender: "bot", text: res.data.reply }]);
     } catch (err) {
-      console.error(err);
-      const errorMessage = err.response?.data?.detail || err.response?.data?.message || err.message || "Error fetching response";
-      const displayError = typeof errorMessage === 'string' ? errorMessage : "Error fetching response";
-      setMessages((prev) => [...prev, { sender: "bot", text: displayError }]);
+        console.error(err);
+        const errorMessage = err.response?.data?.detail || err.response?.data?.message || err.message || "Error fetching response";
+        const displayError = typeof errorMessage === 'string' ? errorMessage : "Error fetching response";
+        setMessages((prev) => [...prev, { sender: "bot", text: displayError }]);
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-    
   };
 
   const handleLogout = () => {
-    // Replace with your actual logout logic
-    console.log("Logout clicked - implement your localStorage removal here");
     localStorage.removeItem("user_id");
     localStorage.removeItem("email");
     navigate("/");
-  };
-
-  const goToDashboard = () => {
-    navigate("/dashboard"); // ✅ navigate to dashboard
   };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
-  // Animation variants for consistency
-  const containerVariants = { hidden: { opacity: 0 }, visible: { opacity: 1, transition: { staggerChildren: 0.1 } } };
-  const itemVariants = { hidden: { y: 20, opacity: 0 }, visible: { y: 0, opacity: 1 } };
+  const itemVariants = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 
   return (
-    // THEME: Main container with paper background and themed fonts
-    <div className="flex flex-col h-screen bg-[#F4EFE9] font-mono text-gray-800 overflow-hidden">
-      {/* THEME: Decorative image */}
-      <motion.img src={artists3} alt="Decorative sketch" className="absolute top-4 left-4 w-32 h-auto hidden lg:block z-0 opacity-50" style={{ rotate: '10deg' }} initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 0.5, scale: 1, transition: { delay: 0.5, duration: 0.7 } }} />
+    // THEME: Main container with background image
+    <div 
+        className="min-h-screen font-mono text-gray-800 relative bg-cover bg-fixed bg-center"
+        style={{ backgroundImage: `url(${mandalaimg})` }}
+    >
+        {/* Semi-transparent overlay for readability */}
+        <div className="absolute inset-0   z-0" />
 
-      {/* THEME: Themed Header */}
-      <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }} className="bg-white/80 backdrop-blur-sm border-b-2 border-gray-200 p-4 shadow-sm z-20">
-        <div className="flex items-center justify-between max-w-5xl mx-auto">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center text-white font-handwriting text-2xl">A</div>
-            <h1 className="font-handwriting text-3xl font-bold text-gray-900">Artisan Assistant</h1>
-          </div>
-          <div className="flex items-center space-x-6">
-            <button onClick={goToDashboard} className="font-semibold text-gray-600 hover:text-black transition-colors duration-300">
-              Back to Journal
-            </button>
-            <button onClick={handleLogout} className="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-1 rounded-sm font-bold transition-colors text-sm">
-              Logout
-            </button>
-          </div>
-        </div>
-      </motion.div>
+        {/* All content is now in a relative container to sit on top of the overlay */}
+        <div className="relative z-10 p-4 md:p-6 lg:p-6">
+            {/* THEME: Themed Navigation */}
+            <Navbar/>
 
-      {/* THEME: Messages Area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-6">
-        <motion.div 
-            className="max-w-3xl mx-auto space-y-4"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-        >
-          {messages.length === 0 && !isLoading && (
-            <div className="text-center py-12 text-gray-500">
-              <p className="font-handwriting text-4xl mb-2">Ready for a chat?</p>
-              <p>Ask for ideas, feedback, or just a little inspiration.</p>
+            {/* THEME: Main content area */}
+            <div className="max-w-6xl mx-auto mt-2">
+                {/* Header */}
+                <div className="text-center mb-8">
+                    <h1 className=" text-5xl md:text-6xl font-bold text-gray-800">The Artisan's AI Master Guide</h1>
+                    <p className="text-gray-600 mt-2 text-lg">Sophistication AI your taklet</p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                    {/* Chat Window */}
+                    <div className="lg:col-span-2 bg-white/50 backdrop-blur-lg rounded-3xl shadow-lg p-6 flex flex-col h-[70vh]">
+                        <div className="flex-1 overflow-y-auto pr-2 space-y-6">
+                            <AnimatePresence>
+                                {/* Initial Greeting */}
+                                {messages.length === 0 && (
+                                    <motion.div variants={itemVariants} className="flex items-start gap-4">
+                                        <GuruAvatar />
+                                        <div className="bg-gray-200 p-4 rounded-xl rounded-tl-none max-w-md shadow-sm">
+                                            <p>Namaste! How may I guide your journey today?</p>
+                                        </div>
+                                    </motion.div>
+                                )}
+                                
+                                {messages.map((msg, i) => (
+                                    <motion.div
+                                        key={i}
+                                        initial="hidden"
+                                        animate="visible"
+                                        variants={itemVariants}
+                                        className={`flex items-start gap-4 ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+                                    >
+                                        {msg.sender === "bot" && <GuruAvatar />}
+                                        <div
+                                            className={`p-4 rounded-xl max-w-md shadow-sm text-white ${
+                                                msg.sender === "user"
+                                                ? "bg-teal-600 rounded-br-none"
+                                                : "bg-gray-500 rounded-tl-none text-gray-800"
+                                            }`}
+                                        >
+                                            <p className="leading-relaxed whitespace-pre-wrap">{msg.text}</p>
+                                        </div>
+                                    </motion.div>
+                                ))}
+
+                                {isLoading && (
+                                    <motion.div variants={itemVariants} className="flex items-start gap-4">
+                                        <GuruAvatar />
+                                        <div className="bg-gray-200 p-4 rounded-xl rounded-tl-none shadow-sm">
+                                            <div className="flex items-center space-x-2">
+                                                <div className="flex space-x-1">
+                                                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
+                                                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                                                    <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
+                                <div ref={messagesEndRef} />
+                            </AnimatePresence>
+                        </div>
+                        {/* Input Area */}
+                        <div className="mt-6 flex gap-4">
+                            <input
+                                type="text"
+                                value={input}
+                                placeholder="Type your question..."
+                                onChange={(e) => setInput(e.target.value)}
+                                onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                                disabled={isLoading}
+                                className="flex-1 p-4 bg-gray-100 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500"
+                            />
+                            <button
+                                onClick={() => sendMessage()}
+                                disabled={isLoading || !input.trim()}
+                                className="bg-amber-800 hover:bg-amber-900 disabled:bg-gray-400 text-white px-8 py-3 rounded-xl font-bold transition-colors shadow-md"
+                            >
+                                Ask GuruAI
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Popular Questions */}
+                    <div className="space-y-4">
+                        <h3 className="font-serif text-2xl font-bold text-gray-700">Popular Questions</h3>
+                        {popularQuestions.map((q, i) => (
+                            <motion.button
+                                key={i}
+                                onClick={() => handlePopularQuestionClick(q)}
+                                className="w-full text-left p-4 bg-white/70 backdrop-blur-lg rounded-xl shadow-md border border-gray-200 hover:bg-white hover:border-amber-400 transition-all duration-300"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: i * 0.1 }}
+                            >
+                                {q}
+                            </motion.button>
+                        ))}
+                    </div>
+                </div>
             </div>
-          )}
-
-          <AnimatePresence>
-            {messages.map((msg, i) => (
-              <motion.div
-                key={i}
-                variants={itemVariants}
-                className={`flex items-end gap-3 ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-              >
-                {msg.sender === "bot" && <div className="font-handwriting text-2xl w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center self-start">A</div>}
-                <div
-                  className={`p-4 rounded-lg max-w-lg shadow-sm border ${
-                    msg.sender === "user"
-                      ? "bg-stone-200 border-stone-300 rounded-br-none"
-                      : "bg-white border-gray-200 rounded-bl-none"
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-          
-          {isLoading && (
-            <motion.div variants={itemVariants} className="flex items-end gap-3 justify-start">
-              <div className="font-handwriting text-2xl w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center self-start">A</div>
-              <div className="bg-white border-gray-200 rounded-lg rounded-bl-none p-4 shadow-sm">
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-500">Thinking</span>
-                  <div className="flex space-x-1">
-                    <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
-                    <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                    <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          <div ref={messagesEndRef} />
-        </motion.div>
-      </div>
-
-      {/* THEME: Themed Input Area */}
-      <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }} className="bg-white/80 backdrop-blur-sm border-t-2 border-gray-200 p-4 shadow-sm z-20">
-        <div className="max-w-3xl mx-auto flex space-x-4">
-          <input
-            type="text"
-            value={input}
-            placeholder="Jot down your thoughts..."
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-            disabled={isLoading}
-            className="flex-1 p-3 bg-stone-100 border-2 border-dashed border-stone-200 rounded-sm focus:outline-none focus:border-stone-400 text-gray-700 placeholder-gray-400 disabled:cursor-not-allowed transition-colors"
-          />
-          <button
-            onClick={sendMessage}
-            disabled={isLoading || !input.trim()}
-            className="bg-gray-800 hover:bg-black disabled:bg-gray-400 text-white px-8 py-3 rounded-sm font-bold transition-colors shadow-md transform hover:-translate-y-0.5"
-          >
-            Send
-          </button>
         </div>
-      </motion.div>
     </div>
   );
 }
+

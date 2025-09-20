@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import RotatingPot from "./RotatingPot"; // <-- IMPORT the new 3D component
-import RotatingVase from './RotatingVase'; // <-- IMPORT the new Vase component
+import RotatingVase from "./RotatingVase"; // <-- IMPORT the new Vase component
+import RotatingPots from "./RotatingPots";
 
 // Image imports
 import artists1 from "../assets/images/artists1.jpg";
 import artists2 from "../assets/images/artists2.jpg";
 import artists3 from "../assets/images/artists3.png";
 import artists4 from "../assets/images/artists4.jpg";
+import mandlabg from "../assets/images/mandalaart.png";
+import Navbar from "./Navbar";
 
 // A custom hook for the typewriter effect
 const useTypewriter = (text, speed = 50) => {
@@ -87,14 +90,14 @@ export default function Dashboard() {
       id: "item1",
       image: artists3,
       caption: "Sketches",
-      position: "top-1/4 -left-16",
+      position: "top-[13%] -left-24",
       rotation: "rotate-6",
     },
     {
       id: "item2",
       image: artists4,
       caption: "Inspiration...",
-      position: "top-1/2 -right-12",
+      position: "top-[60%] -right-32",
       rotation: "-rotate-3",
     },
   ];
@@ -151,20 +154,27 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4EFE9] font-mono text-gray-800 overflow-hidden">
+    <div
+      className="min-h-screen relative font-mono text-gray-800 bg-cover bg-fixed bg-center p-4 md:p-6 lg:p-6"
+      style={{ backgroundImage: `url(${mandlabg})` }}
+    >
+      
+      <Navbar/>
+
       {/* --- NEW: Render the 3D Pot on the left side --- */}
       <div className="absolute top-1/2 -translate-y-1/2 left-4 w-96 h-96 z-0 hidden lg:block">
-        <RotatingPot />
+        {/* <RotatingVase /> */}
+        {/* <RotatingPots /> */}
       </div>
 
       <div className="absolute top-1/4 -right-16 w-96 h-96 z-0 hidden lg:block">
-      <RotatingVase />
-    </div>
+        {/* <RotatingVase /> */}
+      </div>
 
-      <div className="relative z-10 py-12 px-4">
+      <div className="relative z-10 py-12 px-4 bg-transparent">
         {/* <-- ADJUSTED max-width for a more compact layout --> */}
         <motion.div
-          className="max-w-3xl mx-auto relative"
+          className="max-w-3xl mx-auto relative bg-transparent"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -193,57 +203,86 @@ export default function Dashboard() {
           </motion.div> */}
 
           {/* Decorative Images */}
-          <motion.img 
-            src={artists1} 
-            alt="An artist's hands" 
-            className="absolute top-0 right-0 w-32 h-auto border-4 border-white shadow-xl hidden lg:block" 
-            style={{ top: '-2rem', right: '-3rem' }} 
-            initial={{ opacity: 0, scale: 0.8, rotate: 15 }} 
-            animate={{ opacity: 1, scale: 1, rotate: 8, transition: { delay: 0.8, duration: 0.7 } }} 
+          <motion.img
+            src={artists1}
+            alt="An artist's hands"
+            className="absolute top-0 right-0 w-32 h-auto border-4 border-white shadow-xl hidden lg:block"
+            style={{ top: "-2rem", right: "-4rem" }}
+            initial={{ opacity: 0, scale: 0.8, rotate: 15 }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              rotate: 8,
+              transition: { delay: 0.8, duration: 0.7 },
+            }}
           />
-          <motion.img 
-            src={artists2} 
-            alt="Hand-drawn arrow" 
-            className="absolute -top-10 left-1/4 w-20 h-auto opacity-60 pointer-events-none hidden md:block" 
-            initial={{ y: -50, opacity: 0 }} 
-            animate={{ y: 0, opacity: 0.6, transition: { delay: 1, duration: 0.5 } }} 
-          />
-          
-          {scrapbookItems.map(item => ( 
-            <motion.div 
-              key={item.id} 
-              variants={scrapbookItemVariants} 
-              whileHover="hover" 
+          {/* <motion.img
+            src={artists2}
+            alt="Hand-drawn arrow"
+            className="absolute -top-10 left-1/4 w-20 h-auto opacity-60 pointer-events-none hidden md:block"
+            initial={{ y: -50, opacity: 0 }}
+            animate={{
+              y: 0,
+              opacity: 0.8,
+              transition: { delay: 1, duration: 0.5 },
+            }}
+          /> */}
+
+          {scrapbookItems.map((item) => (
+            <motion.div
+              key={item.id}
+              variants={scrapbookItemVariants}
+              whileHover="hover"
               className={`absolute w-40 p-2 bg-white shadow-lg border-2 border-gray-100 hidden lg:block ${item.position} ${item.rotation}`}
-            > 
-              <div className="w-full h-28 bg-gray-200 mb-2"> 
-                <img src={item.image} alt={item.caption} className="w-full h-full object-cover" /> 
-              </div> 
-              <p className="text-center font-handwriting text-base text-gray-700"> 
-                {item.caption} 
-              </p> 
-            </motion.div> 
+            >
+              <div className="w-full h-28 bg-gray-200 mb-2">
+                <img
+                  src={item.image}
+                  alt={item.caption}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <p className="text-center font-handwriting text-base text-gray-700">
+                {item.caption}
+              </p>
+            </motion.div>
           ))}
-          
+
           {/* Header */}
           <motion.div className="text-center mb-16" variants={itemVariants}>
-            <h1 className="font-handwriting text-5xl md:text-6xl font-bold text-gray-900 mb-3">My Creative Journal</h1>
+            <h1 className="font-handwriting text-5xl md:text-6xl font-bold text-gray-900 mb-3">
+              My Creative Journal
+            </h1>
             <p className="text-gray-600">A space for ideas and inspiration.</p>
           </motion.div>
 
           {/* Tools Grid */}
-          <div 
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-20" 
-            style={{ perspective: '1200px' }}
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-20"
+            style={{ perspective: "1200px" }}
           >
             {tools.map((tool) => (
-              <motion.div key={tool.id} variants={cardVariants} animate={exitingCard === tool.id ? 'exit' : 'visible'} whileHover="hover" className={`cursor-pointer transform ${tool.rotation}`} onClick={() => handleNavigate(tool.id, tool.route)} style={{ transformStyle: 'preserve-3d' }}>
+              <motion.div
+                key={tool.id}
+                variants={cardVariants}
+                animate={exitingCard === tool.id ? "exit" : "visible"}
+                whileHover="hover"
+                className={`cursor-pointer transform ${tool.rotation}`}
+                onClick={() => handleNavigate(tool.id, tool.route)}
+                style={{ transformStyle: "preserve-3d" }}
+              >
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-yellow-300/50 backdrop-blur-sm border-l border-r border-yellow-400/60 transform rotate-1"></div>
-                <div className="bg-white p-6 shadow-lg rounded-sm border border-gray-200">
+                <div className="bg-white p-6 shadow-lg bg-white/60 backdrop-blur-sm   rounded-sm border border-gray-200">
                   <div className="text-3xl mb-4">{tool.icon}</div>
-                  <h3 className="font-handwriting text-3xl font-bold text-gray-800 mb-2">{tool.title}</h3>
-                  <p className="text-gray-600 leading-relaxed mb-4 text-sm">{tool.description}</p>
-                  <span className="font-bold text-gray-700 group-hover:text-black">Start Creating →</span>
+                  <h3 className="font-handwriting text-3xl font-bold text-gray-800 mb-2">
+                    {tool.title}
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed mb-4 text-sm">
+                    {tool.description}
+                  </p>
+                  <span className="font-bold text-gray-700 group-hover:text-black">
+                    Start Creating →
+                  </span>
                 </div>
               </motion.div>
             ))}
@@ -252,8 +291,15 @@ export default function Dashboard() {
           {/* User Actions */}
           <motion.div className="text-center" variants={itemVariants}>
             <div className="inline-block relative">
-              <button onClick={handleLogout} className="bg-red-500 text-white px-6 py-2 rounded-sm font-bold shadow-md hover:bg-red-600 transition-colors duration-300 transform hover:-translate-y-0.5">Pack Up</button>
-              <p className="font-handwriting text-sm text-gray-500 mt-3">(Logged in as Artisan)</p>
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-6 py-2 rounded-sm font-bold shadow-md hover:bg-red-600 transition-colors duration-300 transform hover:-translate-y-0.5"
+              >
+                Pack Up
+              </button>
+              <p className="font-handwriting text-sm text-gray-500 mt-3">
+                (Logged in as Artisan)
+              </p>
             </div>
           </motion.div>
         </motion.div>
@@ -261,9 +307,3 @@ export default function Dashboard() {
     </div>
   );
 }
-
-
-
-
-
-

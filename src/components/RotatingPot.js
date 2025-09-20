@@ -36,7 +36,7 @@ function SceneContent() {
       {/* --- UPDATED: The Suspense fallback now uses our themed Loader --- */}
       <Suspense fallback={<Loader />}>
         <Center ref={modelRef}>
-          <Pot scale={25} />
+          <Pot scale={20} />
         </Center>
       </Suspense>
       
@@ -49,7 +49,7 @@ function SceneContent() {
 export default function RotatingPot() {
   return (
     <Canvas 
-        camera={{ position: [0, 0, 25], fov: 50 }} 
+        camera={{ position: [0, 0, 50], fov: 50 }} 
         style={{ background: 'transparent' }}
     >
       <SceneContent />
