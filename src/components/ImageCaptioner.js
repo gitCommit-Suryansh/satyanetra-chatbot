@@ -80,7 +80,7 @@ export default function ImageCaptioner() {
     };
 
     return (
-        <div className="flex flex-col font-mono min-h-screen  text-gray-800" style={{ backgroundImage: `url(${mandalaimg})` }}>
+        <div className="flex flex-col font-serif min-h-screen  text-gray-800" style={{ backgroundImage: `url(${mandalaimg})` }}>
             <Navbar />
             
             <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
@@ -129,20 +129,13 @@ export default function ImageCaptioner() {
                                     <h3 className="font-serif text-2xl font-bold">Generated Instagram Content</h3>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {(Object.keys(captionData.captions)).map(key => (
-                                            <div key={key} className="bg-white/80 p-4 rounded-xl shadow-sm border border-gray-200 transform -rotate-1">
+                                            <div key={key} className="bg-white/80 p-4 rounded-xl shadow-sm border border-gray-200 transform ">
                                                 <p className="text-gray-700">{captionData.captions[key]}</p>
                                                 <p className="mt-2 text-teal-600 font-semibold text-sm">{generateHashtags(captionData.analysis?.labels)}</p>
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="flex items-center justify-between pt-4">
-                                        <div className="flex gap-2">
-                                            <button className="px-4 py-2 bg-white border border-gray-300 rounded-lg font-semibold hover:bg-gray-100">Choose</button>
-                                            <button className="px-4 py-2 bg-white border border-gray-300 rounded-lg font-semibold hover:bg-gray-100">Edit</button>
-                                            <button className="px-4 py-2 bg-white border border-gray-300 rounded-lg font-semibold hover:bg-gray-100">Regenerate</button>
-                                        </div>
-                                        <button className="bg-amber-800 text-white px-6 py-2 rounded-lg font-bold shadow-md hover:bg-amber-900">SEND</button>
-                                    </div>
+                                    
                                 </div>
                             )}
 
@@ -176,10 +169,7 @@ export default function ImageCaptioner() {
                                     {isLoading ? "Generating..." : "Generate Story"}
                                 </button>
                             </div>
-                            <div className="bg-white/70 backdrop-blur-lg rounded-3xl shadow-lg p-6 space-y-4">
-                                <h3 className="font-serif text-xl font-bold text-gray-700">Story History</h3>
-                                <p className="text-gray-500 text-sm">Your previously generated captions will appear here.</p>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>

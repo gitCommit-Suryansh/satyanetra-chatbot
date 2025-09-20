@@ -100,7 +100,7 @@ export default function Chat() {
   return (
     // THEME: Main container with background image
     <div 
-        className="min-h-screen font-mono text-gray-800 relative bg-cover bg-fixed bg-center"
+        className="min-h-screen font-serif text-gray-800 relative bg-cover bg-fixed bg-center"
         style={{ backgroundImage: `url(${mandalaimg})` }}
     >
         {/* Semi-transparent overlay for readability */}

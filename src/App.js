@@ -4,11 +4,11 @@ import Authentication from "./components/Authentication";
 import Dashboard from "./components/Dashboard";
 import Chat from "./components/Chat";
 import StoryGenerator from "./components/StoryGenerator";
-import ProtectedRoute from "./components/ProtectedRoute";
 import ImageCaptioner from "./components/ImageCaptioner";
 import "./App.css";
 import AddProduct from "./components/AddProduct";
 import ProductChatbot from "./components/ProductChatbot";
+import Community from "./components/Community";
 
 function App() {
   return (
@@ -20,68 +20,47 @@ function App() {
           element={localStorage.getItem("user_id") ? <Navigate to="/dashboard" replace /> : <Authentication onLoginSuccess={() => window.location.href = "/dashboard"} />} 
         />
         
-        {/* Protected Routes */}
+        {/* Simplified Routes (formerly Protected) */}
         <Route 
           path="/dashboard" 
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          } 
+          element={<Dashboard />} 
         />
         
         <Route 
           path="/chat" 
-          element={
-            <ProtectedRoute>
-              <Chat />
-            </ProtectedRoute>
-          } 
+          element={<Chat />} 
         />
         <Route 
           path="/AddProduct" 
-          element={
-            <ProtectedRoute>
-              <AddProduct />
-            </ProtectedRoute>
-          } 
+          element={<AddProduct />} 
         />
         <Route 
           path="/ProductChatbot" 
-          element={
-            <ProtectedRoute>
-              <ProductChatbot />
-            </ProtectedRoute>
-          } 
+          element={<ProductChatbot />} 
         />
         
         <Route 
           path="/tools/generate-story" 
-          element={
-            <ProtectedRoute>
-              <StoryGenerator />
-            </ProtectedRoute>
-          } 
+          element={<StoryGenerator />} 
         />
         <Route 
           path="/ImageCaptioner" 
-          element={
-            <ProtectedRoute>
-              <ImageCaptioner />
-            </ProtectedRoute>
-          } 
+          element={<ImageCaptioner />} 
+        />
+        <Route 
+          path="/Community" 
+          element={<Community />} 
         />
         
         {/* Catch all route */}
         <Route path="*" element={<Navigate to="/" replace />} />
 
-         
+        
 
       </Routes>
-
-      
     </Router>
   );
 }
 
 export default App;
+

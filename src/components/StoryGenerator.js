@@ -113,7 +113,7 @@ export default function StoryGenerator() {
     const itemVariants = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 
     return (
-        <div className="flex flex-col h-screen text-gray-800 p-4 md:p-6 lg:p-6 font-mono" style={{ backgroundImage: `url(${mandalaimg})` }}>
+        <div className="flex flex-col h-screen text-gray-800 p-4 md:p-6 lg:p-6 font-serif" style={{ backgroundImage: `url(${mandalaimg})` }}>
             <Navbar />
             
             <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">

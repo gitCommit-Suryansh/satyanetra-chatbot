@@ -76,8 +76,8 @@ export default function Dashboard() {
     },
     {
       id: "image-captioner",
-      title: "Image Describer",
-      description: "Give your pictures a voice and see what the AI muse sees",
+      title: "Image Captioner",
+      description: "Generate captions for your images",
       icon: "🖼️",
       route: "/ImageCaptioner",
       rotation: "rotate-1",
@@ -110,9 +110,13 @@ export default function Dashboard() {
   };
 
   const handleLogout = () => {
+    // Clear the user's session data from local storage
     localStorage.removeItem("user_id");
     localStorage.removeItem("email");
-    navigate("/");
+
+    // Force a full page reload to the root URL
+    // This ensures all application state is cleared
+    window.location.href = "/";
   };
 
   const containerVariants = {
@@ -155,7 +159,7 @@ export default function Dashboard() {
 
   return (
     <div
-      className="min-h-screen relative font-mono text-gray-800 bg-cover bg-fixed bg-center p-4 md:p-6 lg:p-6"
+      className="min-h-screen relative font-serif text-gray-800 bg-cover bg-fixed bg-center p-4 md:p-6 lg:p-6"
       style={{ backgroundImage: `url(${mandlabg})` }}
     >
       
