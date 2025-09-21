@@ -131,7 +131,7 @@ export default function Dashboard() {
     <div className="relative min-h-screen w-full overflow-x-hidden font-serif text-[#333] bg-[#F5F1EC]">
 
       {/* 2. RENDER THE SVG FILTER (IT'S HIDDEN) */}
-      <WaterRipplesFilter />
+      {/* <WaterRipplesFilter /> */}
 
       {/* 3. DEDICATED BACKGROUND DIV WITH THE FILTER APPLIED */}
       <div 

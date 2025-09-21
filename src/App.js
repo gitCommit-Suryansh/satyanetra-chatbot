@@ -6,7 +6,7 @@ import Chat from "./components/Chat";
 import StoryGenerator from "./components/StoryGenerator";
 import ImageCaptioner from "./components/ImageCaptioner";
 import "./App.css";
-import AddProduct from "./components/AddProduct";
+import AddProductModal from "./components/AddProductModal";
 import ProductChatbot from "./components/ProductChatbot";
 import Community from "./components/Community";
 
@@ -32,7 +32,7 @@ function App() {
         />
         <Route 
           path="/AddProduct" 
-          element={<AddProduct />} 
+          element={<AddProductModal />} 
         />
         <Route 
           path="/ProductChatbot" 

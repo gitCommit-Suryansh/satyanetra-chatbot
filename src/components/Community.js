@@ -3,6 +3,8 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import Navbar from './Navbar'; // Assuming you have this shared component
 import mandlabg from "../assets/images/mandalaart.png";
+import AddProductModal from './AddProductModal'; // <-- 1. IMPORT THE MODAL
+
 
 // --- Helper Icons for the UI ---
 const HeartIcon = () => (
@@ -96,6 +98,8 @@ export default function Community() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState("");
     const apiUrl = process.env.REACT_APP_API_URL;
+    const [isModalOpen, setIsModalOpen] = useState(false); // <-- 2. ADD STATE FOR MODAL
+
     
     useEffect(() => {
         const fetchProducts = async () => {
@@ -112,6 +116,11 @@ export default function Community() {
 
         fetchProducts();
     }, [apiUrl]);
+
+    const handleProductAdded = (newProduct) => {
+        // Add the new product to the top of the list for immediate feedback
+        setProducts(prevProducts => [newProduct, ...prevProducts]);
+    };
 
     return (
         <div className="flex flex-col min-h-screen font-sans text-gray-800 p-4 md:p-6 lg:p-6"  style={{ backgroundImage: `url(${mandlabg})` }}
@@ -148,6 +157,20 @@ export default function Community() {
                     </div>
                 </div>
             </main>
+            <button
+                onClick={() => setIsModalOpen(true)}
+                className="fixed bottom-8 right-8 bg-amber-700 text-white p-4 rounded-full shadow-lg hover:bg-amber-800 transition-colors flex items-center gap-2"
+            >
+                <PlusIcon />
+                <span className="hidden md:block font-bold">Add Product</span>
+            </button>
+
+            {/* 5. RENDER THE MODAL COMPONENT */}
+            <AddProductModal 
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onProductAdded={handleProductAdded}
+            />
         </div>
     );
 }
