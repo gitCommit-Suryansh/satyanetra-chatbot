@@ -63,7 +63,7 @@ export default function Dashboard() {
     {
       id: "assistant-chat",
       title: "Chat with Assistant",
-      description: "Chat with the your personal ArtisanAI assistant",
+      description: "Chat with the your personal Kala-Sarthi AI assistant",
       IconComponent: logo1, // Placeholder Name
       route: "/chat",
     },
@@ -153,7 +153,7 @@ export default function Dashboard() {
               transition={{ duration: 0.5 }}
           >
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-800">
-              Your AI Artisan Toolkit
+              Your AI Kala-Sarthi Toolkit
             </h1>
             <p className="mt-4 text-lg text-gray-500">
               Sophistication at your fingertips.

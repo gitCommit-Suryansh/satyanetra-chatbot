@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import Logo from './Logo'
 
 const LockIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -46,10 +47,10 @@ export default function Navbar() {
 
     return (
         <header className="w-full backdrop-blur-lg shadow-lg sticky top-0 z-30 border-b border-gray-200/80">
-            <nav className="max-w-6xl mx-auto py-3 px-6 flex justify-between items-center">
+            <nav className="max-w-6xl mx-auto py-1 px-6 flex justify-between items-center">
                 {/* Logo */}
                 <div className="font-serif text-2xl font-bold text-gray-800 cursor-pointer" onClick={() => navigate('/dashboard')}>
-                    Artisan AI
+                    <Logo/>
                 </div>
 
                 {/* Navigation Links */}

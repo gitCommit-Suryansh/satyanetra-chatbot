@@ -36,7 +36,7 @@ export default function Authentication({ onLoginSuccess }) {
                     {/* Right Side - Form */}
                     <div className="w-full lg:w-1/2 bg-black/40 backdrop-blur-lg p-8 md:p-12 flex flex-col justify-center">
                         <div className="text-center mb-6">
-                             <h2 className="text-white text-5xl font-serif font-bold tracking-widest">ArtisanAI</h2>
+                             <h2 className="text-white text-5xl font-serif font-bold tracking-widest">Kala-Sarthi</h2>
                         </div>
 
                         {isLoginView ? (

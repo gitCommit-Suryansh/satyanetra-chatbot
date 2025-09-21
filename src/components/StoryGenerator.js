@@ -120,7 +120,7 @@ export default function StoryGenerator() {
                 <div className="max-w-6xl mx-auto">
                     {/* Header */}
                     <div className="text-center mb-12">
-                        <h1 className=" text-5xl md:text-6xl font-bold text-gray-800">The Artisan's AI Master Guide</h1>
+                        <h1 className=" text-5xl md:text-6xl font-bold text-gray-800">The Kala-Sarthi's AI Master Guide</h1>
                         <p className="text-gray-600 mt-2 text-lg">Weave your narratives with the power of AI</p>
                     </div>
 

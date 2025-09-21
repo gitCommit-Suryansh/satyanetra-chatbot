@@ -80,7 +80,7 @@ export default function ImageCaptioner() {
     };
 
     return (
-        <div className="flex flex-col font-serif min-h-screen  text-gray-800" style={{ backgroundImage: `url(${mandalaimg})` }}>
+        <div className="flex flex-col font-serif min-h-screen p-4 md:p-6 lg:p-6 text-gray-800" style={{ backgroundImage: `url(${mandalaimg})` }}>
             <Navbar />
             
             <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
@@ -96,7 +96,7 @@ export default function ImageCaptioner() {
                             <div className="flex justify-between items-center">
                                 <div className="flex items-center gap-3">
                                     <KathaAIAvatar />
-                                    <span className="font-semibold text-lg">ArtisanAI</span>
+                                    <span className="font-semibold text-lg">Kala-Sarthi</span>
                                 </div>
                                 <div className="p-2 rounded-full hover:bg-gray-200/50 cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
