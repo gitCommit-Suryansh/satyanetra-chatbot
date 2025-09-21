@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import RotatingPot from "./RotatingPot"; // <-- IMPORT the new 3D component
 import RotatingVase from "./RotatingVase"; // <-- IMPORT the new Vase component
 import RotatingPots from "./RotatingPots";
 
-// Image imports
-import artists1 from "../assets/images/artists1.jpg";
-import artists2 from "../assets/images/artists2.jpg";
 import artists3 from "../assets/images/artists3.png";
 import artists4 from "../assets/images/artists4.jpg";
 import mandlabg from "../assets/images/mandalaart.png";
 import Navbar from "./Navbar";
+import logo1 from '../assets/images/logo1.jpg';
+import logo2 from '../assets/images/logo2.jpg';
+import logo3 from '../assets/images/logo3.jpg';
+import WaterRipplesFilter from "./WaterRipplesFilter";
+
 
 // A custom hook for the typewriter effect
 const useTypewriter = (text, speed = 50) => {
@@ -59,30 +61,30 @@ export default function Dashboard() {
 
   const tools = [
     {
-      id: "chatbot",
+      id: "assistant-chat",
       title: "Chat with Assistant",
-      description: "Get help and guidance from your AI artisan assistant",
-      icon: "💬",
+      description: "Chat with the your personal ArtisanAI assistant",
+      IconComponent: logo1, // Placeholder Name
       route: "/chat",
-      rotation: "-rotate-2",
     },
     {
       id: "story-generator",
       title: "Story Generator",
-      description: "Generate creative stories with audio narration",
-      icon: "📚",
+      description: "Craft compelling narratives for your products",
+      IconComponent: logo2, // Placeholder Name
       route: "/tools/generate-story",
-      rotation: "rotate-1",
     },
     {
-      id: "image-captioner",
-      title: "Image Captioner",
-      description: "Generate captions for your images",
-      icon: "🖼️",
-      route: "/ImageCaptioner",
-      rotation: "rotate-1",
+      id: "caption-creator",
+      title: "Caption Creator",
+      description: "Engage for audience with perfect Instagram captions",
+      IconComponent: logo3, // Placeholder Name
+      route: "/ImageCaptioner", // Assuming this is the correct route
     },
+    
+    
   ];
+  
 
   const scrapbookItems = [
     // <-- ADJUSTED size and position
@@ -102,12 +104,6 @@ export default function Dashboard() {
     },
   ];
 
-  const handleNavigate = (toolId, route) => {
-    setExitingCard(toolId);
-    setTimeout(() => {
-      navigate(route);
-    }, 600);
-  };
 
   const handleLogout = () => {
     // Clear the user's session data from local storage
@@ -121,192 +117,85 @@ export default function Dashboard() {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { staggerChildren: 0.2 } },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
   };
+
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
+    visible: { y: 0, opacity: 1 },
   };
-  const cardVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: 0.5 } },
-    hover: {
-      scale: 1.05,
-      rotate: 0,
-      y: -10,
-      transition: { type: "spring", stiffness: 300, damping: 15 },
-    },
-    exit: {
-      rotateY: 90,
-      opacity: 0,
-      scale: 0.9,
-      transition: { duration: 0.6, ease: "easeInOut" },
-    },
-  };
-  const scrapbookItemVariants = {
-    hidden: { opacity: 0, scale: 0.5 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: { delay: 0.5, type: "spring", stiffness: 260, damping: 20 },
-    },
-    hover: {
-      scale: 1.1,
-      zIndex: 10,
-      transition: { type: "spring", stiffness: 300 },
-    },
-  };
+
 
   return (
-    <div
-      className="min-h-screen relative font-serif text-gray-800 bg-cover bg-fixed bg-center p-4 md:p-6 lg:p-6"
-      style={{ backgroundImage: `url(${mandlabg})` }}
-    >
-      
-      <Navbar/>
+    // Use this main div as a positioning container
+    <div className="relative min-h-screen w-full overflow-x-hidden font-serif text-[#333] bg-[#F5F1EC]">
 
-      {/* --- NEW: Render the 3D Pot on the left side --- */}
-      <div className="absolute top-1/2 -translate-y-1/2 left-4 w-96 h-96 z-0 hidden lg:block">
-        {/* <RotatingVase /> */}
-        {/* <RotatingPots /> */}
-      </div>
+      {/* 2. RENDER THE SVG FILTER (IT'S HIDDEN) */}
+      <WaterRipplesFilter />
 
-      <div className="absolute top-1/4 -right-16 w-96 h-96 z-0 hidden lg:block">
-        {/* <RotatingVase /> */}
-      </div>
+      {/* 3. DEDICATED BACKGROUND DIV WITH THE FILTER APPLIED */}
+      <div 
+        className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
+        style={{ 
+          backgroundImage: `url(${mandlabg})`,
+          filter: 'url(#waterRippleEffect)' // This applies the magic!
+        }}
+      ></div>
 
-      <div className="relative z-10 py-12 px-4 bg-transparent">
-        {/* <-- ADJUSTED max-width for a more compact layout --> */}
-        <motion.div
-          className="max-w-3xl mx-auto relative bg-transparent"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {/* AI Daily Suggestion Note */}
-          {/* <motion.div
-          
-            className="absolute bottom-4 -left-8 w-56 p-4 bg-slate-50 shadow-lg border-t-4 border-slate-300 hidden lg:block"
-            initial={{ opacity: 0, x: -50 }}
-            animate={{
-              opacity: 1,
-              x: 0,
-              transition: { delay: 1.2, duration: 0.8 },
-            }}
-            style={{ rotate: "-4deg" }}
+      {/* Your content is now safely on top of the rippling background */}
+      <div className="relative z-10">
+        <Navbar />
+        <main className="container mx-auto px-4 py-16 sm:py-24">
+          <motion.div 
+              className="text-center mb-12 sm:mb-16"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
           >
-            <p className="text-sm font-semibold text-slate-500 mb-2">
-              A Note from Your AI Muse:
-            </p>
-            <p className="text-slate-700 h-24 text-sm">
-              {" "}
-            
-              {typedSuggestion}
-              <span className="animate-ping">_</span>
-            </p>
-          </motion.div> */}
-
-          {/* Decorative Images */}
-          <motion.img
-            src={artists1}
-            alt="An artist's hands"
-            className="absolute top-0 right-0 w-32 h-auto border-4 border-white shadow-xl hidden lg:block"
-            style={{ top: "-2rem", right: "-4rem" }}
-            initial={{ opacity: 0, scale: 0.8, rotate: 15 }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              rotate: 8,
-              transition: { delay: 0.8, duration: 0.7 },
-            }}
-          />
-          {/* <motion.img
-            src={artists2}
-            alt="Hand-drawn arrow"
-            className="absolute -top-10 left-1/4 w-20 h-auto opacity-60 pointer-events-none hidden md:block"
-            initial={{ y: -50, opacity: 0 }}
-            animate={{
-              y: 0,
-              opacity: 0.8,
-              transition: { delay: 1, duration: 0.5 },
-            }}
-          /> */}
-
-          {scrapbookItems.map((item) => (
-            <motion.div
-              key={item.id}
-              variants={scrapbookItemVariants}
-              whileHover="hover"
-              className={`absolute w-40 p-2 bg-white shadow-lg border-2 border-gray-100 hidden lg:block ${item.position} ${item.rotation}`}
-            >
-              <div className="w-full h-28 bg-gray-200 mb-2">
-                <img
-                  src={item.image}
-                  alt={item.caption}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <p className="text-center font-handwriting text-base text-gray-700">
-                {item.caption}
-              </p>
-            </motion.div>
-          ))}
-
-          {/* Header */}
-          <motion.div className="text-center mb-16" variants={itemVariants}>
-            <h1 className="font-handwriting text-5xl md:text-6xl font-bold text-gray-900 mb-3">
-              My Creative Journal
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-800">
+              Your AI Artisan Toolkit
             </h1>
-            <p className="text-gray-600">A space for ideas and inspiration.</p>
+            <p className="mt-4 text-lg text-gray-500">
+              Sophistication at your fingertips.
+            </p>
           </motion.div>
 
-          {/* Tools Grid */}
-          <div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-20"
-            style={{ perspective: "1200px" }}
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
           >
             {tools.map((tool) => (
-              <motion.div
-                key={tool.id}
-                variants={cardVariants}
-                animate={exitingCard === tool.id ? "exit" : "visible"}
-                whileHover="hover"
-                className={`cursor-pointer transform ${tool.rotation}`}
-                onClick={() => handleNavigate(tool.id, tool.route)}
-                style={{ transformStyle: "preserve-3d" }}
-              >
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 bg-yellow-300/50 backdrop-blur-sm border-l border-r border-yellow-400/60 transform rotate-1"></div>
-                <div className="bg-white p-6 shadow-lg bg-white/60 backdrop-blur-sm   rounded-sm border border-gray-200">
-                  <div className="text-3xl mb-4">{tool.icon}</div>
-                  <h3 className="font-handwriting text-3xl font-bold text-gray-800 mb-2">
+              <Link to={tool.route} key={tool.id}>
+                <motion.div
+                  variants={itemVariants}
+                  whileHover={{ y: -8, scale: 1.03 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  className="bg-white/40 backdrop-blur-lg rounded-xl shadow-md p-8 text-center flex flex-col items-center cursor-pointer border border-gray-200/50 h-full"
+                  style={{scale:0.89}}
+                >
+                  <div className="mb-6">
+                    <img 
+                      src={tool.IconComponent} 
+                      alt={`${tool.title} icon`} 
+                      className="w-16 h-20 rounded-full object-cover shadow-sm" 
+                    />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-800 mb-2">
                     {tool.title}
                   </h3>
-                  <p className="text-gray-600 leading-relaxed mb-4 text-sm">
+                  <p className="text-gray-500 mb-6 flex-grow">
                     {tool.description}
                   </p>
-                  <span className="font-bold text-gray-700 group-hover:text-black">
-                    Start Creating →
-                  </span>
-                </div>
-              </motion.div>
+                  <button className="mt-auto bg-[#D4B996] text-white font-bold py-2 px-8 rounded-lg hover:bg-[#c5a881] transition-colors duration-300">
+                    Use Tool
+                  </button>
+                </motion.div>
+              </Link>
             ))}
-          </div>
-
-          {/* User Actions */}
-          <motion.div className="text-center" variants={itemVariants}>
-            <div className="inline-block relative">
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 text-white px-6 py-2 rounded-sm font-bold shadow-md hover:bg-red-600 transition-colors duration-300 transform hover:-translate-y-0.5"
-              >
-                Pack Up
-              </button>
-              <p className="font-handwriting text-sm text-gray-500 mt-3">
-                (Logged in as Artisan)
-              </p>
-            </div>
           </motion.div>
-        </motion.div>
+        </main>
       </div>
     </div>
   );

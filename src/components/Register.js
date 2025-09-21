@@ -37,9 +37,9 @@ export default function Register({ onRegisterSuccess }) {
   };
 
   return (
-    <div>
-        <h1 className="font-serif text-4xl md:text-5xl font-bold text-gray-800 mb-6">Begin Your Journey</h1>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <>
+      <h1 className="font-serif text-4xl font-bold text-white mb-6 text-center">Begin Your Journey</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
                     name="name"
@@ -48,7 +48,7 @@ export default function Register({ onRegisterSuccess }) {
                     value={form.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-4 py-3 bg-transparent border border-gray-500 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-amber-500"
                 />
                 <input
                     name="email"
@@ -57,7 +57,7 @@ export default function Register({ onRegisterSuccess }) {
                     value={form.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-4 py-3 bg-transparent border border-gray-500 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-amber-500"
                 />
             </div>
             <input
@@ -67,7 +67,7 @@ export default function Register({ onRegisterSuccess }) {
                 value={form.password}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full px-4 py-3 bg-transparent border border-gray-500 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-amber-500"
             />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
@@ -77,7 +77,7 @@ export default function Register({ onRegisterSuccess }) {
                     value={form.craft}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-4 py-3 bg-transparent border border-gray-500 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-amber-500"
                 />
                 <input
                     name="experience"
@@ -86,7 +86,7 @@ export default function Register({ onRegisterSuccess }) {
                     value={form.experience}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-4 py-3 bg-transparent border border-gray-500 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-amber-500"
                 />
             </div>
              <input
@@ -96,18 +96,18 @@ export default function Register({ onRegisterSuccess }) {
                 value={form.location}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full px-4 py-3 bg-transparent border border-gray-500 rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-amber-500"
             />
             <button 
                 type="submit"
-                className="w-full bg-gradient-to-r from-amber-600 to-amber-500 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:from-amber-700 hover:to-amber-600 transition-all transform hover:scale-105"
+                className="w-full py-3 font-bold text-black bg-gradient-to-r from-yellow-400 to-amber-600 rounded-md hover:from-yellow-500 hover:to-amber-700 transition-all duration-300"
             >
                 Sign Up
             </button>
-        </form>
+      </form>
 
-        {message && <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-lg">{message}</div>}
-        {error && <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-lg">{error}</div>}
-    </div>
+      {message && <div className="mt-4 p-2 text-center bg-green-900/50 text-green-300 rounded-md">{message}</div>}
+      {error && <div className="mt-4 p-2 text-center bg-red-900/50 text-red-300 rounded-md">{error}</div>}
+    </>
   );
 }
