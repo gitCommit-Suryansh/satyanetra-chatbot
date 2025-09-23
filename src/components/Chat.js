@@ -115,7 +115,7 @@ export default function Chat() {
             <div className="max-w-6xl mx-auto mt-2">
                 {/* Header */}
                 <div className="text-center mb-8">
-                    <h1 className=" text-5xl md:text-6xl font-bold text-gray-800">The Artisan's AI Master Guide</h1>
+                    <h1 className=" text-5xl md:text-6xl font-bold text-gray-800">The Kala-Sarthi's AI Master Guide</h1>
                     <p className="text-gray-600 mt-2 text-lg">Sophistication AI your taklet</p>
                 </div>
 
